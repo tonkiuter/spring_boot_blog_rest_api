@@ -4,12 +4,10 @@ import com.springboot.blog.payload.PostDTO;
 import com.springboot.blog.service.PostService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/posts")
@@ -27,5 +25,25 @@ public class PostController {
     @PostMapping
     public ResponseEntity<PostDTO> createPost(@RequestBody PostDTO postDTO){
         return new ResponseEntity<>(postService.createPost(postDTO), HttpStatus.CREATED);
+    }
+
+    //getAll Posts rest api
+    @GetMapping
+    public List<PostDTO> getAllPosts(){
+        return postService.getAllPosts();
+    }
+
+    // get post by Id rest api
+    @GetMapping("/{id}")
+    public ResponseEntity<PostDTO> getPostById(@PathVariable(name = "id") Long id){
+        return ResponseEntity.ok(postService.getPostById(id));
+    }
+
+    //update post by Id rest api
+    @PutMapping("/{id}")
+    public ResponseEntity<PostDTO> updatePost(@RequestBody PostDTO postDTO, @PathVariable(name = "id") Long id){
+       PostDTO updatePost = postService.updatePost(postDTO, id);
+
+       return ResponseEntity.ok(updatePost);
     }
 }
