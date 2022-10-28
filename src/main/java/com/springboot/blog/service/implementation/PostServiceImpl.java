@@ -6,6 +6,9 @@ import com.springboot.blog.payload.PostDTO;
 import com.springboot.blog.repository.PostRepository;
 import com.springboot.blog.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -39,12 +42,18 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<PostDTO> getAllPosts() {
+    public List<PostDTO> getAllPosts(int pageNo, int pageSize) {
+        //Create Paginable Instance
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+
         //Here we recover Post not PostDTO's because info we send is that, not the payload itself
         //Post is our Entity
-        List<Post> posts = postRepository.findAll();
+        Page<Post> posts = postRepository.findAll(pageable);
 
-        return posts.stream().map(post -> mapToDTO(post)).collect(Collectors.toList());
+        //get content for page object
+        List<Post> listOfPosts = posts.getContent();
+
+        return listOfPosts.stream().map(post -> mapToDTO(post)).collect(Collectors.toList());
     }
 
     @Override
@@ -68,6 +77,13 @@ public class PostServiceImpl implements PostService {
         Post updatePost = postRepository.save(post);
 
         return mapToDTO(updatePost);
+    }
+
+    @Override
+    public void deletePostById(Long id) {
+        Post post = postRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Post", "Id", id));
+
+        postRepository.delete(post);
     }
 
     //Convert Entity into DTO
