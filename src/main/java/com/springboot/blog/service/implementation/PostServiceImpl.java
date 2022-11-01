@@ -6,7 +6,6 @@ import com.springboot.blog.payload.PostDTO;
 import com.springboot.blog.payload.PostResponse;
 import com.springboot.blog.repository.PostRepository;
 import com.springboot.blog.service.PostService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -44,9 +43,14 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostResponse getAllPosts(int pageNo, int pageSize, String sortBy) {
+    public PostResponse getAllPosts(int pageNo, int pageSize, String sortBy, String sortDir) {
+
+        //Sort by dynamically
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+
         //Create Paginable Instance
-        Pageable pageable = PageRequest.of(pageNo,pageSize, Sort.by(sortBy).descending());
+        Pageable pageable = PageRequest.of(pageNo,pageSize, sort);
 
         //Here we recover Post not PostDTO's because info we send is that, not the payload itself
         //Post is our Entity
