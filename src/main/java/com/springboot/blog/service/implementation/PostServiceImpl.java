@@ -6,6 +6,7 @@ import com.springboot.blog.payload.PostDTO;
 import com.springboot.blog.payload.PostResponse;
 import com.springboot.blog.repository.PostRepository;
 import com.springboot.blog.service.PostService;
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +22,9 @@ public class PostServiceImpl implements PostService {
 
     @Inject
     private PostRepository postRepository;
+
+    @Inject
+    private ModelMapper mapper;
 
     //     Remember to uncomment
     /*
@@ -104,22 +108,26 @@ public class PostServiceImpl implements PostService {
 
     //Convert Entity into DTO
     private PostDTO mapToDTO(Post post){
-        PostDTO postDTO = new PostDTO();
-
-        postDTO.setId(post.getId());
-        postDTO.setTitle(post.getTitle());
-        postDTO.setContent(post.getContent());
-        postDTO.setDescription(post.getDescription());
+        PostDTO postDTO = mapper.map(post, PostDTO.class);
+//
+//        PostDTO postDTO = new PostDTO();
+//
+//        postDTO.setId(post.getId());
+//        postDTO.setTitle(post.getTitle());
+//        postDTO.setContent(post.getContent());
+//        postDTO.setDescription(post.getDescription());
 
         return postDTO;
     }
 
     //converted DTO to Entity
     private Post mapToEntity(PostDTO postDTO){
-        Post post = new Post();
-        post.setTitle(postDTO.getTitle());
-        post.setDescription(postDTO.getDescription());
-        post.setContent(postDTO.getContent());
+        Post post = mapper.map(postDTO, Post.class);
+
+//        Post post = new Post();
+//        post.setTitle(postDTO.getTitle());
+//        post.setDescription(postDTO.getDescription());
+//        post.setContent(postDTO.getContent());
 
         return post;
     }
