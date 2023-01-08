@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
+import javax.validation.Valid;
 
 import static com.springboot.blog.utils.AppConstants.*;
 
@@ -26,7 +27,7 @@ public class PostController {
 
     //Create blog post rest api
     @PostMapping
-    public ResponseEntity<PostDTO> createPost(@RequestBody PostDTO postDTO){
+    public ResponseEntity<PostDTO> createPost(@Valid @RequestBody PostDTO postDTO){
         return new ResponseEntity<>(postService.createPost(postDTO), HttpStatus.CREATED);
     }
 
@@ -50,7 +51,7 @@ public class PostController {
 
     //update post by Id rest api
     @PutMapping("/{id}")
-    public ResponseEntity<PostDTO> updatePost(@RequestBody PostDTO postDTO, @PathVariable(name = "id") Long id){
+    public ResponseEntity<PostDTO> updatePost(@Valid @RequestBody PostDTO postDTO, @PathVariable(name = "id") Long id){
        PostDTO updatePost = postService.updatePost(postDTO, id);
 
        return ResponseEntity.ok(updatePost);
